@@ -3,15 +3,90 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Token Radar: pre-token protocols ranked by implied value, with a farm plan for each.">
-<title>Token Radar: pre-token protocols ranked by implied value</title>
+<title>Token Radar — pre-token protocols, ranked by implied value</title>
 <link rel="stylesheet" href="app.css">
 </head>
 <body>
-<a class="skip" href="#board">Skip to the board</a>
-<main id="board" tabindex="-1" aria-busy="true">
-<noscript><p class="noscript">Token Radar needs JavaScript: the board is rendered from the snapshot data beside this page.</p></noscript>
+<header class="top">
+  <div class="wrap">
+    <p class="kicker">Token launch radar &middot; snapshot <span id="asof">&mdash;</span></p>
+    <h1>Which protocol deserves a token next?</h1>
+    <p class="lede">Every protocol below <strong>records no token</strong> in the snapshot &mdash; never that it has none. Each row states what its token would be worth if the protocol's record stayed as it is, and exactly what to do to farm it.</p>
+    <nav class="tabs" aria-label="Views">
+      <button type="button" class="tab on" data-view="board">Board</button>
+      <button type="button" class="tab" data-view="live">Live tokens &middot; the comparison set</button>
+      <button type="button" class="tab" data-view="model">How the value is worked out</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section id="view-board">
+    <div class="stats" id="stats"></div>
+    <div class="controls">
+      <label class="ctl">Search <input id="q" type="search" placeholder="Protocol name or slug" autocomplete="off"></label>
+      <label class="ctl">Category <select id="cat"><option value="">All categories</option></select></label>
+      <label class="ctl">Chain <select id="chain"><option value="">All chains</option></select></label>
+      <label class="ctl">Sort by
+        <select id="sort">
+          <option value="implied">Implied value</option>
+          <option value="tvl">TVL</option>
+          <option value="growth">7-day growth</option>
+          <option value="age">Age (no token the longest)</option>
+        </select>
+      </label>
+      <label class="check"><input id="watch" type="checkbox"> Watchlist only</label>
+    </div>
+    <p class="hint" id="count"></p>
+    <section id="detail" class="detail" hidden></section>
+    <div class="tablewrap">
+      <table>
+        <thead><tr>
+          <th>#</th><th>Protocol</th><th>Category</th><th>Chains</th>
+          <th class="num">TVL</th><th class="num">7d</th><th class="num">Age</th>
+          <th class="num">Sector &times;</th><th class="num">Implied value</th>
+        </tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+    <p class="hint">Click a row for its full model breakdown and farm plan. Rank is the model's claim: the table sorts as you ask, the rank column never moves.</p>
+  </section>
+
+  <section id="view-live" hidden>
+    <h2>Live tokens: the comparison set</h2>
+    <p>These protocols already trade, so the board never ranks them. They are the peer set the sector multiples are measured from: the market's own values, shown so you can check the model's homework. The 24 largest by market cap are listed.</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr>
+          <th>Protocol</th><th>Category</th><th class="num">TVL</th><th class="num">Market cap</th><th class="num">Mcap / TVL</th><th class="num">7d</th>
+        </tr></thead>
+        <tbody id="live-rows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="view-model" hidden>
+    <h2>How the value is worked out</h2>
+    <p class="formula">implied value = TVL &times; sector multiple &times; growth &times; maturity &times; breadth</p>
+    <div id="factors"></div>
+    <h3>Sector multiples, measured from this snapshot</h3>
+    <p>Each multiple is the median market-cap / TVL of the live-token protocols in that category (five peers or more); categories with fewer peers use the whole live set's median. Every multiple is clamped to 0.05&ndash;0.60 so one tiny-TVL outlier cannot set the price.</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Category</th><th class="num">Live peers</th><th class="num">Multiple</th><th>Measured from</th></tr></thead>
+        <tbody id="sector-rows"></tbody>
+      </table>
+    </div>
+    <h3>What the board covers</h3>
+    <p id="coverage"></p>
+    <h3>Read this before you farm</h3>
+    <p>A protocol on this board records no token in the snapshot. That is a record, not a promise: it may still have a token the record does not carry, and it may never issue one. Implied value is this entry's claim from the snapshot's own figures, never a prediction of a launch, a price, or an airdrop. Farming costs gas and locks capital; never pay anyone to claim, and never farm with money you cannot afford to leave in the position.</p>
+  </section>
 </main>
+
+<footer class="wrap">
+  <p>Source: the sealed snapshot, fetched once from DefiLlama's public protocols endpoint. Model <span id="modelver">&mdash;</span>. No network is used by this page: all data ships with it.</p>
+</footer>
 <script src="../data.js"></script>
 <script src="app.js"></script>
 </body>
